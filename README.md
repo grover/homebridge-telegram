@@ -37,17 +37,18 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
           "name": "Bot name as seen in HomeKit",
           "token": "TELEGRAM BOT TOKEN",
           "chat": "TELEGRAM CHAT ID",
-          "messages": [
-            [
+          "error": "Something broken. I'm shutting down.",
+          "notifications": {
+            "0": [
               "Hi!",
               "Hello!",
               "Hey mate!"
             ],
-            [
+            "1": [
               "Good bye!",
               "I'm sad to see you leave."
             ]
-          ]
+          }
         }
       ]
     }
@@ -62,6 +63,7 @@ The platform can provide any number of bots that have to be predefined in the ho
 | name | A unique name for the bot. Will be used as the accessory name. |
 | token | The Telegram Bot API token provided when you registered the bot. |
 | chat | The chat ID used to send the notification to. |
+| error | The message to send if something fails. If you do not want an error message visible in Telegram, keep this undefined. |
 | messages | An array of arrays of strings, which represent the messages to send. The first level of the arrays represents the urgency and the second array of strings represents the messages of that urgency. The urgency levels start at zero. |
 
 ## Creating a bot

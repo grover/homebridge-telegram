@@ -19,7 +19,8 @@ class BotAccessory {
     this.category = Accessory.Categories.SWITCH;
 
     this._chat_id = config.chat;
-    this._messages = config.messages;
+    this._notifications = config.notifications;
+    this._error = config.error;
     this._urgency = 0;
 
     this._telegramBot = new BotFather(config.token);
@@ -44,7 +45,7 @@ class BotAccessory {
         });
       })
       .then(bot => {
-        console.info('I am @${bot.username}, right? :)');
+        console.info('I am @%s, right? :)', bot.username);
         this._getBotUpdates();
       })
       .catch(exception => {
@@ -72,11 +73,8 @@ class BotAccessory {
           return json.result;
         }
 
-        console.error(json.description);
-        this._reportBotFailure({
-          failed: true,
-          fatal: true
-        });
+        console.error("getUpdates reported a failure: " + json.description);
+        throw new Error("Telegram reported an error.");
       })
       .then(updates => {
         for (let update of updates) {
@@ -95,7 +93,7 @@ class BotAccessory {
         this._getBotUpdates();
       })
       .catch(exception => {
-        console.error(exception.stack)
+        console.error("Failed to get updates." + exception.stack)
         this._reportBotFailure({
           failed: true,
           fatal: true
@@ -129,7 +127,7 @@ class BotAccessory {
     bot.getCharacteristic(Characteristic.SendTelegram)
       .on('set', this._send.bind(this));
 
-    bot.getCharacteristic(Characteristic.QuietMode)
+    bot.getCharacteristic(Characteristic.Quiet)
       .on('set', this._setQuiet.bind(this))
       .on('get', this._getQuiet.bind(this));
 
@@ -198,9 +196,9 @@ class BotAccessory {
   pickMessage() {
     return new Promise((resolve, reject) => {
       try {
-        const messages = this._messages[this._urgency];
-        const messageIndex = Math.floor(Math.random() * messages.length);
-        resolve(messages[messageIndex]);
+        const notifications = this._notifications[this._urgency];
+        const notificationIndex = Math.floor(Math.random() * notifications.length);
+        resolve(notifications[notificationIndex]);
       }
       catch (e) {
         reject(e);
@@ -215,6 +213,15 @@ class BotAccessory {
       if (options.fatal) {
         console.error('The bot has failed fatally. Will not send any further messages or attempt to talk to Telegram.');
         this._botFailed = true;
+
+        if (this._error) {
+          this._telegramBot.api('sendMessage', {
+            chat_id: this._chat_id,
+            text: this._error
+          }).catch(e => {
+            console.error('Failed to send error notification to Telegram. Error: ' + e);
+          });
+        }
       }
     }
   }

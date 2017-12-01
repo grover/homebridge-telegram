@@ -22,8 +22,8 @@ module.exports = {
     Characteristic.SendTelegram.UUID = 'BEDECDE6-3FD4-4C85-A7D4-DCB93837833B';
 
 
-    Characteristic.QuietMode = function () {
-      Characteristic.call(this, 'Quiet mode', '9799244D-7E74-471F-B672-C41C262F7337');
+    Characteristic.Quiet = function () {
+      Characteristic.call(this, 'Quiet', '9799244D-7E74-471F-B672-C41C262F7337');
 
       this.setProps({
         format: Characteristic.Formats.BOOL,
@@ -32,8 +32,8 @@ module.exports = {
 
       this.value = this.getDefaultValue();
     };
-    inherits(Characteristic.QuietMode, Characteristic);
-    Characteristic.QuietMode.UUID = '9799244D-7E74-471F-B672-C41C262F7337';
+    inherits(Characteristic.Quiet, Characteristic);
+    Characteristic.Quiet.UUID = '9799244D-7E74-471F-B672-C41C262F7337';
 
     Characteristic.Urgency = function () {
       Characteristic.call(this, 'Urgency', 'A867BE84-89DE-45C1-A974-2D39BD704232');
@@ -70,7 +70,7 @@ module.exports = {
 
       // Required Characteristics
       this.addCharacteristic(Characteristic.SendTelegram);
-      this.addCharacteristic(Characteristic.QuietMode);
+      this.addCharacteristic(Characteristic.Quiet);
       this.addCharacteristic(Characteristic.Urgency);
       this.addCharacteristic(Characteristic.BotFailed);
 
