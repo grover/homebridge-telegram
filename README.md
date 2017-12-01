@@ -64,7 +64,7 @@ The platform can provide any number of bots that have to be predefined in the ho
 | token | The Telegram Bot API token provided when you registered the bot. |
 | chat | The chat ID used to send the notification to. |
 | error | The message to send if something fails. If you do not want an error message visible in Telegram, keep this undefined. |
-| messages | An array of arrays of strings, which represent the messages to send. The first level of the arrays represents the urgency and the second array of strings represents the messages of that urgency. The urgency levels start at zero. |
+| notifications | An object mapping urgency levels to an array of notification strings to send randomly when triggered. |
 
 ## Creating a bot
 
@@ -86,10 +86,10 @@ The exposed switch service supports the following characteristics:
 
 | Characteristic | UUID | Permissions | Type | Usage |
 |---|---|---|---|---|
-| SendTelegram | `BEDECDE6-3FD4-4C85-A7D4-DCB93837833B` | READ, WRITE, NOTIFY | BOOL | Sends a message via telegram. The message will be picked at random from the pool of messages depending on the urgency. Will automatically reset, once the message has been sent. If QuietMode is enabled, will behave as if a message was sent, but the sending will not happen. |
-| QuietMode | `9799244D-7E74-471F-B672-C41C262F7337` | READ, WRITE | BOOL | Stops the bot from sending messages. |
+| Trigger | `BEDECDE6-3FD4-4C85-A7D4-DCB93837833B` | READ, WRITE, NOTIFY | BOOL | Sends a message via telegram. The message will be picked at random from the pool of messages depending on the urgency. Will automatically reset, once the message has been sent. If QuietMode is enabled, will behave as if a message was sent, but the sending will not happen. |
+| Quiet | `9799244D-7E74-471F-B672-C41C262F7337` | READ, WRITE | BOOL | Stops the bot from sending messages, while this is enabled. |
 | Urgency | `A867BE84-89DE-45C1-A974-2D39BD704232` | READ, WRITE | UINT32 | Determines the message set to pick from, when SendTelegram is triggered. The urgency ranges from 0 to 10. The plugin will not send a message if there are no messages for the urgency level and will go into a fatal failed state. |
-| BotFailed | `505F2C13-69A4-4CC8-9F7E-420DA6672E5B` | READ, NOTIFY | BOOL | The bot has failed for some reason. |
+| Failed | `505F2C13-69A4-4CC8-9F7E-420DA6672E5B` | READ, NOTIFY | BOOL | The bot has failed for some reason. |
 
 See [HomeKitTypes.js](src/HomeKitTypes.js) for details.
 

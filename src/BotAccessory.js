@@ -124,14 +124,14 @@ class BotAccessory {
 
   getBotService() {
     const bot = new Service.TelegramBot(this.name);
-    bot.getCharacteristic(Characteristic.SendTelegram)
+    bot.getCharacteristic(Characteristic.TelegramBotTrigger)
       .on('set', this._send.bind(this));
 
-    bot.getCharacteristic(Characteristic.Quiet)
+    bot.getCharacteristic(Characteristic.TelegramBotQuiet)
       .on('set', this._setQuiet.bind(this))
       .on('get', this._getQuiet.bind(this));
 
-    bot.getCharacteristic(Characteristic.Urgency)
+    bot.getCharacteristic(Characteristic.TelegramBotUrgency)
       .on('set', this._setUrgency.bind(this));
 
     return bot;
@@ -208,7 +208,7 @@ class BotAccessory {
 
   _reportBotFailure(options) {
     if (!this._botFailed) {
-      this._services[1].getCharacteristic(Characteristic.BotFailed)
+      this._services[1].getCharacteristic(Characteristic.TelegramBotFailed)
         .updateValue(options.failed, undefined, undefined);
       if (options.fatal) {
         console.error('The bot has failed fatally. Will not send any further messages or attempt to talk to Telegram.');

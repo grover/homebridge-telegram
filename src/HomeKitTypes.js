@@ -8,8 +8,8 @@ module.exports = {
     const Characteristic = hap.Characteristic;
     const Service = hap.Service;
 
-    Characteristic.SendTelegram = function () {
-      Characteristic.call(this, 'Send telegram', 'BEDECDE6-3FD4-4C85-A7D4-DCB93837833B');
+    Characteristic.TelegramBotTrigger = function () {
+      Characteristic.call(this, 'Trigger', 'BEDECDE6-3FD4-4C85-A7D4-DCB93837833B');
 
       this.setProps({
         format: Characteristic.Formats.BOOL,
@@ -18,11 +18,11 @@ module.exports = {
 
       this.value = this.getDefaultValue();
     };
-    inherits(Characteristic.SendTelegram, Characteristic);
-    Characteristic.SendTelegram.UUID = 'BEDECDE6-3FD4-4C85-A7D4-DCB93837833B';
+    inherits(Characteristic.TelegramBotTrigger, Characteristic);
+    Characteristic.TelegramBotTrigger.UUID = 'BEDECDE6-3FD4-4C85-A7D4-DCB93837833B';
 
 
-    Characteristic.Quiet = function () {
+    Characteristic.TelegramBotQuiet = function () {
       Characteristic.call(this, 'Quiet', '9799244D-7E74-471F-B672-C41C262F7337');
 
       this.setProps({
@@ -32,10 +32,10 @@ module.exports = {
 
       this.value = this.getDefaultValue();
     };
-    inherits(Characteristic.Quiet, Characteristic);
-    Characteristic.Quiet.UUID = '9799244D-7E74-471F-B672-C41C262F7337';
+    inherits(Characteristic.TelegramBotQuiet, Characteristic);
+    Characteristic.TelegramBotQuiet.UUID = '9799244D-7E74-471F-B672-C41C262F7337';
 
-    Characteristic.Urgency = function () {
+    Characteristic.TelegramBotUrgency = function () {
       Characteristic.call(this, 'Urgency', 'A867BE84-89DE-45C1-A974-2D39BD704232');
 
       this.setProps({
@@ -49,11 +49,11 @@ module.exports = {
 
       this.value = this.getDefaultValue();
     };
-    inherits(Characteristic.Urgency, Characteristic);
-    Characteristic.Urgency.UUID = 'A867BE84-89DE-45C1-A974-2D39BD704232';
+    inherits(Characteristic.TelegramBotUrgency, Characteristic);
+    Characteristic.TelegramBotUrgency.UUID = 'A867BE84-89DE-45C1-A974-2D39BD704232';
 
-    Characteristic.BotFailed = function () {
-      Characteristic.call(this, 'BotFailed', '505F2C13-69A4-4CC8-9F7E-420DA6672E5B');
+    Characteristic.TelegramBotFailed = function () {
+      Characteristic.call(this, 'Failed', '505F2C13-69A4-4CC8-9F7E-420DA6672E5B');
 
       this.setProps({
         format: Characteristic.Formats.BOOL,
@@ -62,17 +62,17 @@ module.exports = {
 
       this.value = this.getDefaultValue();
     };
-    inherits(Characteristic.BotFailed, Characteristic);
-    Characteristic.BotFailed.UUID = '505F2C13-69A4-4CC8-9F7E-420DA6672E5B';
+    inherits(Characteristic.TelegramBotFailed, Characteristic);
+    Characteristic.TelegramBotFailed.UUID = '505F2C13-69A4-4CC8-9F7E-420DA6672E5B';
 
     Service.TelegramBot = function (displayName, subtype) {
       Service.call(this, displayName, 'CA1172BF-8FB8-4F26-98E9-71EE92F7AF63', subtype);
 
       // Required Characteristics
-      this.addCharacteristic(Characteristic.SendTelegram);
-      this.addCharacteristic(Characteristic.Quiet);
-      this.addCharacteristic(Characteristic.Urgency);
-      this.addCharacteristic(Characteristic.BotFailed);
+      this.addCharacteristic(Characteristic.TelegramBotTrigger);
+      this.addCharacteristic(Characteristic.TelegramBotQuiet);
+      this.addCharacteristic(Characteristic.TelegramBotUrgency);
+      this.addCharacteristic(Characteristic.TelegramBotFailed);
 
       // Optional Characteristics
       this.addOptionalCharacteristic(Characteristic.Name);
