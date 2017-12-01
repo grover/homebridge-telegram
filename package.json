@@ -1,0 +1,29 @@
+{
+  "name": "homebridge-telegram",
+  "version": "0.0.1",
+  "description": "Integrating telegram messenger with HomeKit",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grover/homebridge-telegram.git"
+  },
+  "keywords": [
+    "homebridge",
+    "homebridge-plugin",
+    "telegram",
+    "notifications"
+  ],
+  "author": "Michael Froehlich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grover/homebridge-telegram/issues"
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  },
+  "homepage": "https://github.com/grover/homebridge-telegram",
+  "dependencies": {
+    "botfather": "^3.8.0"
+  }
+}
