@@ -32,7 +32,7 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
   "platforms": [
     {
       "platform": "Telegram",
-      "switches": [
+      "bots": [
         {
           "name": "Bot name as seen in HomeKit",
           "token": "TELEGRAM BOT TOKEN",
