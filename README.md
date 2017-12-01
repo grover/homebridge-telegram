@@ -73,7 +73,7 @@ way is to message the bot and look for the JSON dumps in the homebridge log. Thi
 
 ## Accessory Services
 
-Each bot will expose four services:
+Each bot will expose two services:
 
 * Accessory Information Service
 * Bot Service
@@ -83,7 +83,7 @@ Each bot will expose four services:
 The exposed switch service supports the following characteristics:
 
 | Characteristic | UUID | Permissions | Type | Usage |
-|---|---|---|---|
+|---|---|---|---|---|
 | SendTelegram | `BEDECDE6-3FD4-4C85-A7D4-DCB93837833B` | READ, WRITE, NOTIFY | BOOL | Sends a message via telegram. The message will be picked at random from the pool of messages depending on the urgency. Will automatically reset, once the message has been sent. If QuietMode is enabled, will behave as if a message was sent, but the sending will not happen. |
 | QuietMode | `9799244D-7E74-471F-B672-C41C262F7337` | READ, WRITE | BOOL | Stops the bot from sending messages. |
 | Urgency | `A867BE84-89DE-45C1-A974-2D39BD704232` | READ, WRITE | UINT32 | Determines the message set to pick from, when SendTelegram is triggered. The urgency ranges from 0 to 10. The plugin will not send a message if there are no messages for the urgency level and will go into a fatal failed state. |
