@@ -1,6 +1,6 @@
 {
   "name": "homebridge-telegram",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Integrating telegram messenger with HomeKit",
   "main": "src/index.js",
   "repository": {

@@ -165,7 +165,7 @@ class BotAccessory {
     callback();
     setTimeout(() => {
       console.log('Reset the send telegram characteristic');
-      this._services[1].getCharacteristic(Characteristic.SendTelegram)
+      this._services[1].getCharacteristic(Characteristic.TelegramBotTrigger)
         .updateValue(false, undefined, undefined);
     }, 1000);
 
