@@ -97,7 +97,6 @@ See [HomeKitTypes.js](src/HomeKitTypes.js) for details.
 
 This platform and the bots it drives have been verified to work with the following apps on iOS 11
 
-* Home
 * Elgato Eve
 
 ## License

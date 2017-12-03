@@ -1,6 +1,7 @@
 "use strict";
 
 const inherits = require('util').inherits;
+const clone = require('clone');
 const BotFather = require('botfather');
 
 var Accessory, Characteristic, Service;
@@ -22,6 +23,8 @@ class BotAccessory {
     this._notifications = config.notifications;
     this._error = config.error;
     this._urgency = 0;
+    this._notificationsFromUrgency = 0;
+    this._setActiveNotifications(this._notificationsFromUrgency);
 
     this._telegramBot = new BotFather(config.token);
     this._botFailed = false;
@@ -155,7 +158,11 @@ class BotAccessory {
 
   _setUrgency(urgency, callback) {
     this.log("Setting bot urgency to " + urgency);
-    this._urgency = urgency;
+
+    if (0 <= urgency && urgency < this._notifications.length) {
+      this._urgency = urgency;
+      this._setActiveNotifications(urgency);
+    }
 
     callback();
   }
@@ -194,16 +201,32 @@ class BotAccessory {
   }
 
   pickMessage() {
+    const self = this;
     return new Promise((resolve, reject) => {
       try {
-        const notifications = this._notifications[this._urgency];
-        const notificationIndex = Math.floor(Math.random() * notifications.length);
-        resolve(notifications[notificationIndex]);
+        const notificationIndex = Math.floor(Math.random() * self._activeNotifications.length);
+        const notification = self._activeNotifications[notificationIndex];
+        this._activeNotifications.splice(notificationIndex, 1);
+
+        if (self._activeNotifications.length == 0) {
+          self._setActiveNotifications(self._notificationsFromUrgency);
+        }
+
+        resolve(notification);
       }
       catch (e) {
         reject(e);
       }
     });
+  }
+
+  _setActiveNotifications(urgency) {
+    if (typeof this._notifications[urgency] === "undefined") {
+      return;
+    }
+
+    this._notificationsFromUrgency = urgency;
+    this._activeNotifications = clone(this._notifications[this._notificationsFromUrgency]);
   }
 
   _reportBotFailure(options) {
