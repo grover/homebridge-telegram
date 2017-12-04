@@ -99,6 +99,19 @@ This platform and the bots it drives have been verified to work with the followi
 
 * Elgato Eve
 
+## Some asks for friendly gestures
+
+If you use this and like it - please leave a note by staring this package here or on GitHub.
+
+If you use it and have a
+problem, file an issue at [GitHub](https://github.com/grover/homebridge-telegram/issues) - I'll try
+to help. 
+
+If you tried this, but don't like it: tell me about it in an issue too. I'll try my best
+to address these in my spare time.
+
+If you fork this, go ahead - I'll accept pull requests for enhancements.
+
 ## License
 
 MIT License

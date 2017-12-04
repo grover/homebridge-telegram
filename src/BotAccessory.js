@@ -27,32 +27,32 @@ class BotAccessory {
     this._setActiveNotifications(this._notificationsFromUrgency);
 
     this._telegramBot = new BotFather(config.token);
-    this._botFailed = false;
-
     this._verifyBot();
 
     this._services = this.createServices();
   }
 
   _verifyBot() {
+
+    this._botFailed = false;
+
     this._telegramBot.api('getMe')
       .then(json => {
         if (json.ok) {
           return json.result
         }
 
-        console.error(json.description)
         this._reportBotFailure({
           failed: true,
           fatal: true
         });
       })
       .then(bot => {
-        console.info('I am @%s, right? :)', bot.username);
+        this.log(`I am @"${bot.username}", right? :)`);
         this._getBotUpdates();
       })
       .catch(exception => {
-        console.error(exception);
+        this.log("Error: " + exception);
         this._reportBotFailure({
           failed: true,
           fatal: true
@@ -76,14 +76,14 @@ class BotAccessory {
           return json.result;
         }
 
-        console.error("getUpdates reported a failure: " + json.description);
+        this.log("getUpdates reported a failure: " + json.description);
         throw new Error("Telegram reported an error.");
       })
       .then(updates => {
         for (let update of updates) {
-          console.log(JSON.stringify(update));
+          this.log(JSON.stringify(update));
           if (update.message.chat) {
-            console.info("Are you trying to invite me to a chat? Chat:" + JSON.stringify(update.message.chat));
+            this.log("Are you trying to invite me to a chat? Chat:" + JSON.stringify(update.message.chat));
           }
         }
 
@@ -96,7 +96,7 @@ class BotAccessory {
         this._getBotUpdates();
       })
       .catch(exception => {
-        console.error("Failed to get updates." + exception.stack)
+        this.log("Failed to get updates." + exception)
         this._reportBotFailure({
           failed: true,
           fatal: true
@@ -171,7 +171,7 @@ class BotAccessory {
 
     callback();
     setTimeout(() => {
-      console.log('Reset the send telegram characteristic');
+      this.log('Reset the send telegram characteristic');
       this._services[1].getCharacteristic(Characteristic.TelegramBotTrigger)
         .updateValue(false, undefined, undefined);
     }, 1000);
@@ -184,14 +184,14 @@ class BotAccessory {
           text: message
         });
       }).then(() => {
-        console.log('Message sent.');
+        this.log('Message sent.');
 
         this._reportBotFailure({
           failed: false,
           fatal: false
         });
       }).catch((e) => {
-        console.error('Send failed: ' + e);
+        this.log('Send failed: ' + e);
         this._reportBotFailure({
           failed: true,
           fatal: false
@@ -234,7 +234,8 @@ class BotAccessory {
       this._services[1].getCharacteristic(Characteristic.TelegramBotFailed)
         .updateValue(options.failed, undefined, undefined);
       if (options.fatal) {
-        console.error('The bot has failed fatally. Will not send any further messages or attempt to talk to Telegram.');
+
+        this.log('The bot has failed fatally. Will try to reconnect in 5s.');
         this._botFailed = true;
 
         if (this._error) {
@@ -242,9 +243,11 @@ class BotAccessory {
             chat_id: this._chat_id,
             text: this._error
           }).catch(e => {
-            console.error('Failed to send error notification to Telegram. Error: ' + e);
+            this.log('Failed to send error notification to Telegram. Error: ' + e);
           });
         }
+
+        setTimeout(this._verifyBot.bind(this), 5000);
       }
     }
   }
