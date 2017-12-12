@@ -16,6 +16,10 @@ randomly.
 The bots are non-interactive, e.g. they do not provide commands to trigger things and will
 not listen for messages sent to them.
 
+## Changelog
+
+All changes to homebridge-telegram are documented in the [changelog](CHANGELOG.md).
+
 ## Installation instructions
 
 After [Homebridge](https://github.com/nfarina/homebridge) has been installed:

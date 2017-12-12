@@ -159,12 +159,14 @@ class BotAccessory {
   _setUrgency(urgency, callback) {
     this.log("Setting bot urgency to " + urgency);
 
-    if (0 <= urgency && urgency < this._notifications.length) {
+    if (this._notifications.hasOwnProperty(urgency)) {
       this._urgency = urgency;
       this._setActiveNotifications(urgency);
+      callback();
     }
-
-    callback();
+    else {
+      callback(new Error('Invalid value.'));
+    }
   }
 
   _send(value, callback) {
