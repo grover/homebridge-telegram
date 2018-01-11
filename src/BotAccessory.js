@@ -52,7 +52,9 @@ class BotAccessory {
         this._getBotUpdates();
       })
       .catch(exception => {
-        this.log("Error: " + exception);
+        this.log("Failed to retrieve bot data from telegram.");
+        this.log(exception);
+
         this._reportBotFailure({
           failed: true,
           fatal: true
