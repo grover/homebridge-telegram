@@ -1,6 +1,8 @@
 const version = require('../package.json').version;
 const BotAccessory = require('./BotAccessory');
+
 const HomeKitTypes = require('./HomeKitTypes');
+const SendCharacteristic = require('./SendCharacteristic');
 
 const HOMEBRIDGE = {
   Accessory: null,
@@ -30,6 +32,7 @@ const TelegramPlatform = class {
 
 
     HomeKitTypes.registerWith(api.hap);
+    SendCharacteristic.registerWith(api.hap);
   }
 
   accessories(callback) {
