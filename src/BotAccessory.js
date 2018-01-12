@@ -111,10 +111,6 @@ class BotAccessory {
     this._bridgingStateService
       .getCharacteristic(Characteristic.Reachable)
       .updateValue(reachable);
-
-    this._botService
-      .getCharacteristic(Characteristic.TelegramBotFailed)
-      .updateValue(!reachable);
   }
 }
 
