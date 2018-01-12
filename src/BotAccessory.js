@@ -2,108 +2,32 @@
 
 const inherits = require('util').inherits;
 const clone = require('clone');
-const BotFather = require('botfather');
 
-var Accessory, Characteristic, Service;
+const Bot = require('./Bot');
+const SendCharacteristic = require('./SendCharacteristic');
+
+var Characteristic, Service;
 
 
 class BotAccessory {
 
   constructor(homebridge, log, config) {
-    Accessory = homebridge.Accessory;
     Characteristic = homebridge.Characteristic;
     Service = homebridge.Service;
 
     this.log = log;
     this.name = config.name;
     this.version = config.version;
-    this.category = Accessory.Categories.SWITCH;
+    this.api = homebridge;
 
-    this._chat_id = config.chat;
     this._notifications = config.notifications;
-    this._error = config.error;
-    this._urgency = 0;
-    this._notificationsFromUrgency = 0;
-    this._setActiveNotifications(this._notificationsFromUrgency);
 
-    this._telegramBot = new BotFather(config.token);
-    this._verifyBot();
+    this._bot = new Bot(this.name, config.token, config.chat, config.error);
+    this._bot.on('connected', this._onBotConnected.bind(this));
+    this._bot.on('failed', this._onBotFailed.bind(this));
+    this._bot.connect();
 
     this._services = this.createServices();
-  }
-
-  _verifyBot() {
-
-    this._botFailed = false;
-
-    this._telegramBot.api('getMe')
-      .then(json => {
-        if (json.ok) {
-          return json.result
-        }
-
-        this._reportBotFailure({
-          failed: true,
-          fatal: true
-        });
-      })
-      .then(bot => {
-        this.log(`I am @"${bot.username}", right? :)`);
-        this._getBotUpdates();
-      })
-      .catch(exception => {
-        this.log("Failed to retrieve bot data from telegram.");
-        this.log(exception);
-
-        this._reportBotFailure({
-          failed: true,
-          fatal: true
-        });
-      });
-  }
-
-  _getBotUpdates() {
-    const parameters = {
-      limit: 100,
-      timeout: 60 * 2
-    };
-
-    if (this._updateOffset) {
-      parameters.offset = this._updateOffset;
-    }
-
-    this._telegramBot.api('getUpdates', parameters)
-      .then(json => {
-        if (json.ok) {
-          return json.result;
-        }
-
-        this.log("getUpdates reported a failure: " + json.description);
-        throw new Error("Telegram reported an error.");
-      })
-      .then(updates => {
-        for (let update of updates) {
-          this.log(JSON.stringify(update));
-          if (update.message.chat) {
-            this.log("Are you trying to invite me to a chat? Chat:" + JSON.stringify(update.message.chat));
-          }
-        }
-
-        // offset = update_id of last processed update + 1 
-        if (updates.length > 0) {
-          const identifiers = updates.map((update) => update.update_id);
-          this._updateOffset = Math.max.apply(Math, identifiers) + 1;
-        }
-
-        this._getBotUpdates();
-      })
-      .catch(exception => {
-        this.log("Failed to get updates." + exception)
-        this._reportBotFailure({
-          failed: true,
-          fatal: true
-        });
-      });
   }
 
   getServices() {
@@ -113,6 +37,7 @@ class BotAccessory {
   createServices() {
     return [
       this.getAccessoryInformationService(),
+      this.getBridgingStateService(),
       this.getBotService()
     ];
   }
@@ -127,20 +52,33 @@ class BotAccessory {
       .setCharacteristic(Characteristic.HardwareRevision, this.version);
   }
 
-  getBotService() {
-    const bot = new Service.TelegramBot(this.name);
-    bot.getCharacteristic(Characteristic.TelegramBotTrigger)
-      .on('set', this._send.bind(this));
+  getBridgingStateService() {
+    this._bridgingStateService = new Service.BridgingState();
+    this._bridgingStateService
+      .setCharacteristic(Characteristic.Reachable, false)
+      .setCharacteristic(Characteristic.LinkQuality, 4)
+      .setCharacteristic(Characteristic.AccessoryIdentifier, this.name)
+      .setCharacteristic(Characteristic.Category, this.api.Accessory.Categories.OTHER);
 
-    bot.getCharacteristic(Characteristic.TelegramBotQuiet)
+    return this._bridgingStateService;
+  }
+
+  getBotService() {
+    this._botService = new Service.TelegramBot(this.name);
+
+    this._botService.getCharacteristic(Characteristic.TelegramBotQuiet)
       .on('set', this._setQuiet.bind(this))
       .on('get', this._getQuiet.bind(this));
 
-    bot.getCharacteristic(Characteristic.TelegramBotUrgency)
-      .on('set', this._setUrgency.bind(this));
 
-    return bot;
+    for (const name of Object.keys(this._notifications)) {
+      const c = new Characteristic.SendCharacteristic(this.api, name, this._notifications[name], this._bot);
+      this._botService.addCharacteristic(c);
+    }
+
+    return this._botService;
   }
+
   identify(callback) {
     this.log(`Identify requested on telegram bot ${this.name}`);
     callback();
@@ -158,102 +96,25 @@ class BotAccessory {
     callback(undefined, this._quiet);
   }
 
-  _setUrgency(urgency, callback) {
-    this.log("Setting bot urgency to " + urgency);
-
-    if (this._notifications.hasOwnProperty(urgency)) {
-      this._urgency = urgency;
-      this._setActiveNotifications(urgency);
-      callback();
-    }
-    else {
-      callback(new Error('Invalid value.'));
-    }
+  _onBotConnected() {
+    this._setReachable(true);
   }
 
-  _send(value, callback) {
-
-    callback();
+  _onBotFailed() {
+    this._setReachable(false);
     setTimeout(() => {
-      this.log('Reset the send telegram characteristic');
-      this._services[1].getCharacteristic(Characteristic.TelegramBotTrigger)
-        .updateValue(false, undefined, undefined);
+      this._bot.connect();
     }, 1000);
-
-    if (value && !this._quiet) {
-
-      this.pickMessage().then(message => {
-        return this._telegramBot.api('sendMessage', {
-          chat_id: this._chat_id,
-          text: message
-        });
-      }).then(() => {
-        this.log('Message sent.');
-
-        this._reportBotFailure({
-          failed: false,
-          fatal: false
-        });
-      }).catch((e) => {
-        this.log('Send failed: ' + e);
-        this._reportBotFailure({
-          failed: true,
-          fatal: false
-        });
-      });
-    }
   }
 
-  pickMessage() {
-    const self = this;
-    return new Promise((resolve, reject) => {
-      try {
-        const notificationIndex = Math.floor(Math.random() * self._activeNotifications.length);
-        const notification = self._activeNotifications[notificationIndex];
-        this._activeNotifications.splice(notificationIndex, 1);
+  _setReachable(reachable) {
+    this._bridgingStateService
+      .getCharacteristic(Characteristic.Reachable)
+      .updateValue(reachable);
 
-        if (self._activeNotifications.length == 0) {
-          self._setActiveNotifications(self._notificationsFromUrgency);
-        }
-
-        resolve(notification);
-      }
-      catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  _setActiveNotifications(urgency) {
-    if (typeof this._notifications[urgency] === "undefined") {
-      return;
-    }
-
-    this._notificationsFromUrgency = urgency;
-    this._activeNotifications = clone(this._notifications[this._notificationsFromUrgency]);
-  }
-
-  _reportBotFailure(options) {
-    if (!this._botFailed) {
-      this._services[1].getCharacteristic(Characteristic.TelegramBotFailed)
-        .updateValue(options.failed, undefined, undefined);
-      if (options.fatal) {
-
-        this.log('The bot has failed fatally. Will try to reconnect in 5s.');
-        this._botFailed = true;
-
-        if (this._error) {
-          this._telegramBot.api('sendMessage', {
-            chat_id: this._chat_id,
-            text: this._error
-          }).catch(e => {
-            this.log('Failed to send error notification to Telegram. Error: ' + e);
-          });
-        }
-
-        setTimeout(this._verifyBot.bind(this), 5000);
-      }
-    }
+    this._botService
+      .getCharacteristic(Characteristic.TelegramBotFailed)
+      .updateValue(!reachable);
   }
 }
 
