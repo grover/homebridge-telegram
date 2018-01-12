@@ -19,12 +19,19 @@
     "url": "https://github.com/grover/homebridge-telegram/issues"
   },
   "engines": {
-    "node": ">=0.12.0",
-    "homebridge": ">=0.2.0"
+    "node": ">=8.9.3",
+    "homebridge": ">=0.4.36"
   },
   "homepage": "https://github.com/grover/homebridge-telegram",
   "dependencies": {
     "botfather": "^3.8.0",
-    "clone": "^2.1.1"
+    "clone": "^2.1.1",
+    "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "npm-github-release": "^0.9.0"
+  },
+  "scripts": {
+    "release": "npm-github-release"
   }
 }
