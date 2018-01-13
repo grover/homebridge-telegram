@@ -1,8 +1,11 @@
-
 # Homebridge Plugin for Telegram Bots
 
 A platform that provides configurable [Telegram](https://telegram.org) Bots and integrates
 them with HomeKit via [Homebridge](https://github.com/nfarina/homebridge).
+
+__*UPGRADING FROM 0.0.7?*__
+
+The configuration format and the exposed characteristics have changed. You will have to update your configuration, rules and scenes.
 
 ## Why a Telegram Bot?
 
