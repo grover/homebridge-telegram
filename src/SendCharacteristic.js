@@ -33,12 +33,8 @@ module.exports = {
     Characteristic.SendCharacteristic.prototype._onSet = function (value, callback) {
 
       const self = this;
-      setTimeout(() => {
-        debug('[%s] Reset the send telegram characteristic', this.displayName);
-        self.updateValue(false);
-      }, 1000);
 
-      if (value && !this._quiet) {
+      if (value) {
         this.pickMessage()
           .then(message => {
             return this._bot.send(message);
@@ -48,6 +44,12 @@ module.exports = {
           })
           .catch(e => {
             callback(e);
+          })
+          .then(() => {
+            setTimeout(() => {
+              debug('[%s] Reset the send telegram characteristic', this.displayName);
+              self.updateValue(false);
+            }, 1000);
           });
       }
       else {

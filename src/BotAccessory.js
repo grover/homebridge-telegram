@@ -4,6 +4,7 @@ const inherits = require('util').inherits;
 const clone = require('clone');
 
 const Bot = require('./Bot');
+const QuietHandler = require('./QuietHandler');
 const SendCharacteristic = require('./SendCharacteristic');
 
 var Characteristic, Service;
@@ -26,6 +27,8 @@ class BotAccessory {
     this._bot.on('connected', this._onBotConnected.bind(this));
     this._bot.on('failed', this._onBotFailed.bind(this));
     this._bot.connect();
+
+    this._quietHandler = new QuietHandler(this._bot);
 
     this._services = this.createServices();
   }
@@ -68,11 +71,11 @@ class BotAccessory {
 
     this._botService.getCharacteristic(Characteristic.TelegramBotQuiet)
       .on('set', this._setQuiet.bind(this))
-      .on('get', this._getQuiet.bind(this));
+      .updateValue(false);
 
 
     for (const name of Object.keys(this._notifications)) {
-      const c = new Characteristic.SendCharacteristic(this.api, name, this._notifications[name], this._bot);
+      const c = new Characteristic.SendCharacteristic(this.api, name, this._notifications[name], this._quietHandler);
       this._botService.addCharacteristic(c);
     }
 
@@ -86,14 +89,9 @@ class BotAccessory {
 
   _setQuiet(quiet, callback) {
     this.log("Setting bot quiet state to " + quiet);
-    this._quiet = quiet;
+    this._quietHandler.setQuiet(quiet);
 
     callback();
-  }
-
-  _getQuiet(callback) {
-    this.log("Returning current bot quiet status: s=" + (this._timer !== undefined));
-    callback(undefined, this._quiet);
   }
 
   _onBotConnected() {
