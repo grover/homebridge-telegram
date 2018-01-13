@@ -20,7 +20,7 @@
   },
   "engines": {
     "node": ">=8.9.3",
-    "homebridge": ">=0.4.36"
+    "homebridge": ">=0.4.35"
   },
   "homepage": "https://github.com/grover/homebridge-telegram",
   "dependencies": {
