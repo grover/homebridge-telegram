@@ -46,15 +46,23 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
           "chat": "TELEGRAM CHAT ID",
           "error": "Something broken. I'm shutting down.",
           "notifications": {
-            "Hello": [
-              "Hi!",
-              "Hello!",
-              "Hey mate!"
+            "Hello": {
+              "mode": "Markdown",
+              "randomize": true,
+              "messages": [
+                "*Hi!*",
+                "_Hello!_",
+                "Hey mate!"
+              ]
             ],
             "Bye": [
-              "Good bye!",
-              "I'm sad to see you leave."
-            ]
+              "mode": "HTML",
+              "randomize": false,
+              "messages": [
+                "<b>Good bye!</b>",
+                "<i>I'm sad to see you leave.</i>"
+              ]
+            ],
           }
         }
       ]
@@ -62,6 +70,16 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
   ]
 }
 ```
+
+> Simple style configuration will still work and can be mixed with the advanced configuration modes:
+>
+> ```json
+> "Hello": [
+>   "Hi!",
+>   "Hello!",
+>   "Hey mate!"
+> ]
+> ```
 
 The platform can provide any number of bots that have to be predefined in the homebridge config.json. Each bot supports the following attributes:
 
@@ -74,6 +92,17 @@ The platform can provide any number of bots that have to be predefined in the ho
 | notifications | An object providing notifications in named groups. |
 
 A switch is created for each notification group.
+
+### Configuring notification groups
+
+Notification groups have additional configuration options if the new style configuration is used:
+
+| Attributes | Usage |
+|------------|-------|
+| mode | Specify the format of the notifications. Do not specify this for plain text notifications. Use *Markdown* for markdown notifications and *HTML* for HTML notifications. |
+| randomize | If true, will select a message randomly. The default value is true. If you do not want random messages, select false. |
+| messages | An array of messages to use for the button. |
+
 
 ## Creating a bot
 
