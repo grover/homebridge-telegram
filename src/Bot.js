@@ -67,9 +67,10 @@ class Bot extends EventEmitter {
       });
   }
 
-  send(message) {
+  send(message, mode) {
     const options = {
       chat_id: this._chatId,
+      parse_mode: mode,
       text: message
     };
 
