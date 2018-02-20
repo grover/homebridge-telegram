@@ -10,9 +10,9 @@ class QuietHandler {
     this._quiet = quiet;
   }
 
-  send(message) {
+  send(message, mode) {
     if (this._quiet === false) {
-      this._bot.send(message);
+      this._bot.send(message, mode);
     }
   }
 }

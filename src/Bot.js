@@ -70,9 +70,12 @@ class Bot extends EventEmitter {
   send(message, mode) {
     const options = {
       chat_id: this._chatId,
-      parse_mode: mode,
       text: message
     };
+
+    if (mode !== undefined) {
+      options.parse_mode = mode;
+    }
 
     return this._call('sendMessage', options)
       .catch(e => {
