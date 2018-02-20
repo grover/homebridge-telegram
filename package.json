@@ -19,8 +19,8 @@
     "url": "https://github.com/grover/homebridge-telegram/issues"
   },
   "engines": {
-    "node": ">=8.9.3",
-    "homebridge": ">=0.4.35"
+    "node": ">=9.3.0",
+    "homebridge": ">=0.4.36"
   },
   "homepage": "https://github.com/grover/homebridge-telegram",
   "dependencies": {
