@@ -116,6 +116,11 @@ The folks at Telegram created better [documentation](https://core.telegram.org/b
 Once you've created the bot you'll need to find a chat ID that this plugin should send messages to. The easiest
 way is to message the bot and look for the JSON dumps in the homebridge log. This also supports group chats.
 
+## Formatting Options
+
+Please read [the formatting options](https://core.telegram.org/bots/api#formatting-options) in the Telegram Bot API for
+the supported HTML and Markdown formatting options.
+
 ## Accessory Services
 
 Each bot will expose two services:
