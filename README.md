@@ -3,9 +3,14 @@
 A platform that provides configurable [Telegram](https://telegram.org) Bots and integrates
 them with HomeKit via [Homebridge](https://github.com/nfarina/homebridge).
 
-__*UPGRADING FROM 0.0.7?*__
+## Status
 
-The configuration format and the exposed characteristics have changed. You will have to update your configuration, rules and scenes.
+[![HitCount](http://hits.dwyl.io/grover/homebridge-telegram.svg)](https://github.com/grover/homebridge-telegram)
+[![Build Status](https://travis-ci.org/grover/homebridge-telegram.png?branch=master)](https://travis-ci.org/grover/homebridge-telegram)
+[![Dependency Status](https://img.shields.io/david/grover/homebridge-telegram.svg?style=flat-square)](https://david-dm.org/grover/homebridge-telegram)
+[![devDependency Status](https://img.shields.io/david/dev/grover/homebridge-telegram.svg?style=flat-square)](https://david-dm.org/grover/homebridge-telegram#info=devDependencies)
+[![Node version](https://img.shields.io/node/v/homebridge-telegram.svg?style=flat)](http://nodejs.org/download/)
+[![NPM Version](https://badge.fury.io/js/homebridge-telegram.svg?style=flat)](https://npmjs.org/package/homebridge-telegram)
 
 ## Why a Telegram Bot?
 
