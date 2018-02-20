@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const EventEmitter = require('events');
 const debug = require('debug')('Bot');
@@ -31,7 +31,7 @@ class Bot extends EventEmitter {
         this._setStatus('connected');
       })
       .catch(e => {
-        debug("[%s] Failed to retrieve bot data from telegram. %o", this.name, e);
+        debug('[%s] Failed to retrieve bot data from telegram. %o', this.name, e);
       });
   }
 
@@ -63,7 +63,7 @@ class Bot extends EventEmitter {
         this._getBotUpdates();
       })
       .catch(e => {
-        debug("[%s] Failed to retrieve bot updates from telegram. %o", this.name, e);
+        debug('[%s] Failed to retrieve bot updates from telegram. %o', this.name, e);
       });
   }
 
@@ -90,7 +90,7 @@ class Bot extends EventEmitter {
           return json.result;
         }
 
-        debug("[%s] Error calling %s - %s", this.name, method, json.description);
+        debug('[%s] Error calling %s - %s', this.name, method, json.description);
         this._setStatus('failed');
         throw new Error(json.description);
       });

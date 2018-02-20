@@ -1,4 +1,5 @@
-const version = require('../package.json').version;
+'use strict';
+
 const BotAccessory = require('./BotAccessory');
 
 const HomeKitTypes = require('./HomeKitTypes');
@@ -21,7 +22,7 @@ module.exports = (homebridge) => {
   HOMEBRIDGE.UUIDGen = homebridge.hap.uuid;
 
   homebridge.registerPlatform(platformName, platformPrettyName, TelegramPlatform, true);
-}
+};
 
 const TelegramPlatform = class {
   constructor(log, config, api) {
@@ -48,4 +49,4 @@ const TelegramPlatform = class {
 
     callback(_accessories);
   }
-}
+};

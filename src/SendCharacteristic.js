@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const debug = require('debug')('Bot');
 const inherits = require('util').inherits;
@@ -96,7 +96,7 @@ module.exports = {
           reject(e);
         }
       });
-    }
+    };
 
     Characteristic.SendCharacteristic.prototype.getMessageIndex = function () {
       if (!this._randomize) {
@@ -104,6 +104,6 @@ module.exports = {
       }
 
       return Math.floor(Math.random() * this._activeNotifications.length);
-    }
+    };
   }
 };

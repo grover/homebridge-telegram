@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const inherits = require('util').inherits;
 
@@ -33,4 +33,4 @@ module.exports = {
     inherits(Service.TelegramBot, Service);
     Service.TelegramBot.UUID = 'CA1172BF-8FB8-4F26-98E9-71EE92F7AF63';
   }
-}
+};

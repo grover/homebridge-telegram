@@ -1,11 +1,7 @@
-"use strict";
-
-const inherits = require('util').inherits;
-const clone = require('clone');
+'use strict';
 
 const Bot = require('./Bot');
 const QuietHandler = require('./QuietHandler');
-const SendCharacteristic = require('./SendCharacteristic');
 
 var Characteristic, Service;
 
@@ -88,7 +84,7 @@ class BotAccessory {
   }
 
   _setQuiet(quiet, callback) {
-    this.log("Setting bot quiet state to " + quiet);
+    this.log('Setting bot quiet state to ' + quiet);
     this._quietHandler.setQuiet(quiet);
 
     callback();
