@@ -51,7 +51,7 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
           "chat": "TELEGRAM CHAT ID",
           "error": "Something broken. I'm shutting down.",
           "notifications": {
-            "Hello": [
+            "Hello": {
               "mode": "Markdown",
               "randomize": true,
               "messages": [
@@ -59,15 +59,15 @@ After [Homebridge](https://github.com/nfarina/homebridge) has been installed:
                 "_Hello!_",
                 "Hey mate!"
               ]
-            ],
-            "Bye": [
+            },
+            "Bye": {
               "mode": "HTML",
               "randomize": false,
               "messages": [
                 "<b>Good bye!</b>",
                 "<i>I'm sad to see you leave.</i>"
               ]
-            ],
+            }
           }
         }
       ]
